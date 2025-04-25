@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: coding-agent
+    env: docker
+    plan: free # Change to 'standard' for better performance
+    region: oregon # Adjust based on your location
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: LIBRARIES_IO_API_KEY
+        sync: false # Set manually in Render dashboard
+    autoDeploy: true
