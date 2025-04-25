@@ -1,15 +1,21 @@
-FROM python:3.10-slim
+FROM python:3.10  # Use full image instead of slim for better dependency support
 
 WORKDIR /app
 
-# Install prerequisites and create directories
+# Install prerequisites and system dependencies
 RUN apt-get update && \
-    apt-get install -y wget gnupg curl libstdc++6 && \
+    apt-get install -y \
+    wget \
+    gnupg \
+    curl \
+    libstdc++6 \
+    libgomp1 \
+    gfortran && \
     mkdir -p /usr/share/keyrings /usr/local && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install core dependencies
+# Install core programming language runtimes
 RUN apt-get update && \
     apt-get install -y \
     gcc \
@@ -39,7 +45,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install additional dependencies (handle failures gracefully)
+# Install additional runtimes (handle failures gracefully)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     mono-complete \
@@ -61,7 +67,9 @@ RUN npm install -g typescript && \
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
+# Install Python dependencies in stages
 COPY requirements.txt .
+RUN pip install --no-cache-dir torch==2.0.1 sentence-transformers==2.2.2
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
