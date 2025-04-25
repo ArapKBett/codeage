@@ -1,0 +1,32 @@
+[
+    {
+        "name": "NumPy",
+        "description": "A Python library for numerical computations and array manipulation.",
+        "platform": "pypi"
+    },
+    {
+        "name": "Pandas",
+        "description": "A Python library for data analysis and manipulation, especially with tabular data.",
+        "platform": "pypi"
+    },
+    {
+        "name": "React",
+        "description": "A JavaScript library for building user interfaces, particularly single-page applications.",
+        "platform": "npm"
+    },
+    {
+        "name": "Express",
+        "description": "A fast, unopinionated, minimalist web framework for Node.js.",
+        "platform": "npm"
+    },
+    {
+        "name": "Spring",
+        "description": "A Java framework for building robust, scalable applications.",
+        "platform": "maven"
+    },
+    {
+        "name": "TensorFlow",
+        "description": "An open-source machine learning framework for Python.",
+        "platform": "pypi"
+    }
+]
