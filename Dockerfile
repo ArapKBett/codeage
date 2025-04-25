@@ -71,9 +71,12 @@ RUN npm install -g typescript && \
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Install all Python dependencies
+# Install torch using prebuilt CPU wheel
+RUN pip install --no-cache-dir --verbose torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu > pip_torch.log 2>&1 || { cat pip_torch.log; exit 1; }
+
+# Install all other Python dependencies using default PyPI index
 COPY requirements.txt .
-RUN pip install --no-cache-dir --verbose -r requirements.txt --index-url https://download.pytorch.org/whl/cpu > pip_requirements.log 2>&1 || { cat pip_requirements.log; exit 1; }
+RUN pip install --no-cache-dir --verbose -r requirements.txt > pip_requirements.log 2>&1 || { cat pip_requirements.log; exit 1; }
 
 COPY . .
 
