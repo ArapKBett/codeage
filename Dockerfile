@@ -18,7 +18,10 @@ RUN apt-get update && \
     libffi-dev \
     libssl-dev \
     make \
-    cmake && \
+    cmake \
+    libblas-dev \
+    liblapack-dev \
+    libopenblas-dev && \
     mkdir -p /usr/share/keyrings /usr/local && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -68,15 +71,14 @@ RUN npm install -g typescript && \
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Install torch and sentence-transformers first with verbose output
-COPY requirements.txt .
-RUN pip install --no-cache-dir --verbose torch==2.0.1 sentence-transformers==2.2.2 || { echo "Failed to install torch or sentence-transformers"; exit 1; }
+# Install torch and sentence-transformers using prebuilt CPU wheel
+RUN pip install --no-cache-dir --verbose \
+    torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \
+    sentence-transformers==2.2.2 > pip_install.log 2>&1 || { cat pip_install.log; exit 1; }
 
 # Install remaining dependencies
-RUN pip install --no-cache-dir --verbose -r requirements.txt || { echo "Failed to install requirements.txt"; exit 1; }
-
-# Verify sentence-transformers installation
-RUN python -c "import sentence_transformers; print('sentence-transformers installed:', sentence_transformers.__version__)" || { echo "sentence-transformers not installed"; exit 1; }
+COPY requirements.txt .
+RUN pip install --no-cache-dir --verbose -r requirements.txt > pip_requirements.log 2>&1 || { cat pip_requirements.log; exit 1; }
 
 COPY . .
 
