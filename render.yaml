@@ -2,11 +2,17 @@ services:
   - type: web
     name: coding-agent
     env: docker
-    plan: free # Change to 'standard' for better performance
+    plan: standard # $7/month, 1 CPU, 2GB RAM
     region: oregon # Adjust based on your location
     envVars:
       - key: PORT
         value: 8000
       - key: LIBRARIES_IO_API_KEY
         sync: false # Set manually in Render dashboard
+      - key: MODEL_NAME
+        value: codellama/CodeLlama-7b-hf # Or /app/models/codellama-7b-hf for preloaded weights
+    disks:
+      - name: model-weights
+        mountPath: /app/models
+        sizeGB: 10
     autoDeploy: true
