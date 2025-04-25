@@ -71,10 +71,11 @@ RUN npm install -g typescript && \
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Install torch and sentence-transformers using prebuilt CPU wheel
-RUN pip install --no-cache-dir --verbose \
-    torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu \
-    sentence-transformers==2.2.2 > pip_install.log 2>&1 || { cat pip_install.log; exit 1; }
+# Install torch using prebuilt CPU wheel
+RUN pip install --no-cache-dir --verbose torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu > pip_torch.log 2>&1 || { cat pip_torch.log; exit 1; }
+
+# Install sentence-transformers using default PyPI index
+RUN pip install --no-cache-dir --verbose sentence-transformers==2.7.0 > pip_sentence_transformers.log 2>&1 || { cat pip_sentence_transformers.log; exit 1; }
 
 # Install remaining dependencies
 COPY requirements.txt .
