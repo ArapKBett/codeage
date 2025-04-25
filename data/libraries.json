@@ -28,5 +28,25 @@
         "name": "TensorFlow",
         "description": "An open-source machine learning framework for Python.",
         "platform": "pypi"
+    },
+    {
+        "name": "Rails",
+        "description": "A Ruby web application framework for rapid development.",
+        "platform": "rubygems"
+    },
+    {
+        "name": "Django",
+        "description": "A high-level Python web framework for rapid development.",
+        "platform": "pypi"
+    },
+    {
+        "name": "Flask",
+        "description": "A lightweight Python web framework for building APIs.",
+        "platform": "pypi"
+    },
+    {
+        "name": "Boost",
+        "description": "A C++ library collection for portable, high-performance code.",
+        "platform": "cpp"
     }
 ]
