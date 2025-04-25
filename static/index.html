@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arap's Coding Agent</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>Coding Agent</h1>
+        <textarea id="query" placeholder="Enter your coding query (e.g., Write a Python script using pandas to analyze a CSV)"></textarea>
+        <button onclick="generateCode()">Generate Code</button>
+        <h2>Generated Code</h2>
+        <pre><code id="code-output" class="language-python"></code></pre>
+        <h2>Execution Result</h2>
+        <pre id="execution-output"></pre>
+        <h2>Linting Result</h2>
+        <pre id="linting-output"></pre>
+        <h2>Suggested Libraries</h2>
+        <pre id="libraries-output"></pre>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+                                 </html>
