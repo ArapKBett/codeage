@@ -1,17 +1,24 @@
-# Use full image instead of slim for better dependency support
+# Use full Python 3.10 image for robust dependency support
 FROM python:3.10
 
 WORKDIR /app
 
-# Install prerequisites and system dependencies
+# Install system dependencies and build tools
 RUN apt-get update && \
     apt-get install -y \
     wget \
     gnupg \
     curl \
+    gcc \
+    g++ \
+    python3-dev \
     libstdc++6 \
     libgomp1 \
-    gfortran && \
+    gfortran \
+    libffi-dev \
+    libssl-dev \
+    make \
+    cmake && \
     mkdir -p /usr/share/keyrings /usr/local && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -19,11 +26,6 @@ RUN apt-get update && \
 # Install core programming language runtimes
 RUN apt-get update && \
     apt-get install -y \
-    gcc \
-    g++ \
-    libffi-dev \
-    libssl-dev \
-    python3-dev \
     nodejs \
     npm \
     openjdk-17-jdk \
@@ -39,8 +41,6 @@ RUN apt-get update && \
     perl \
     tcl \
     racket \
-    make \
-    cmake \
     clang \
     llvm && \
     apt-get clean && \
@@ -68,10 +68,15 @@ RUN npm install -g typescript && \
 # Upgrade pip
 RUN pip install --no-cache-dir --upgrade pip
 
-# Install Python dependencies in stages
+# Install torch and sentence-transformers first with verbose output
 COPY requirements.txt .
-RUN pip install --no-cache-dir torch==2.0.1 sentence-transformers==2.2.2
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --verbose torch==2.0.1 sentence-transformers==2.2.2 || { echo "Failed to install torch or sentence-transformers"; exit 1; }
+
+# Install remaining dependencies
+RUN pip install --no-cache-dir --verbose -r requirements.txt || { echo "Failed to install requirements.txt"; exit 1; }
+
+# Verify sentence-transformers installation
+RUN python -c "import sentence_transformers; print('sentence-transformers installed:', sentence_transformers.__version__)" || { echo "sentence-transformers not installed"; exit 1; }
 
 COPY . .
 
