@@ -4,20 +4,10 @@ WORKDIR /app
 
 # Install prerequisites and create directories
 RUN apt-get update && \
-    apt-get install -y wget gnupg curl && \
+    apt-get install -y wget gnupg curl libstdc++6 && \
     mkdir -p /usr/share/keyrings /usr/local && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Add Swift repository (optional, comment out if not needed)
-# RUN curl -s https://archive.swift.org/keys/swift-release.asc | gpg --dearmor -o /usr/share/keyrings/swift-release.gpg || true && \
-#     echo "deb [signed-by=/usr/share/keyrings/swift-release.gpg] https://archive.swift.org/debian bullseye main" > /etc/apt/sources.list.d/swift.list || true
-
-# Add Julia (optional, comment out if not needed)
-# RUN wget -q https://julialang-s3.julialang.org/bin/linux/x64/1.8/julia-1.8.5-linux-x86_64.tar.gz -O /tmp/julia.tar.gz && \
-#     tar -xzf /tmp/julia.tar.gz -C /usr/local && \
-#     ln -s /usr/local/julia-1.8.5/bin/julia /usr/local/bin/julia && \
-#     rm /tmp/julia.tar.gz || true
 
 # Install core dependencies
 RUN apt-get update && \
