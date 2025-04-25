@@ -21,19 +21,18 @@ async def read_root(request: Request):
 async def generate_code_endpoint(request: Request):
     data = await request.json()
     query = data.get("query", "")
+    target_language = data.get("language", "").lower()  # Allow explicit language selection
 
     # Retrieve relevant libraries
     library_context = retrieve_libraries(query)
 
     # Generate code
-    code = generate_code(query, library_context)
+    code = generate_code(query, library_context, target_language)
 
     # Determine language for sandbox
-    language = "py"  # Default to Python
-    if "javascript" in query.lower() or "js" in query.lower():
-        language = "js"
-    elif "java" in query.lower():
-        language = "java"
+    language = target_language if target_language else detect_language(query)
+    if not language:
+        language = "py"  # Default to Python
 
     # Execute code in sandbox
     execution_result = None
@@ -46,9 +45,11 @@ async def generate_code_endpoint(request: Request):
         # Lint Python code
         linting_result = lint_python_code(temp_file)
         execution_result = execute_code(temp_file, language)
-    elif language in ["js", "java"]:
+    elif language in SUPPORTED_EXECUTION_LANGUAGES:
         execution_result = execute_code(temp_file, language)
-    
+    else:
+        execution_result = f"Execution not supported for {language}. Code generation only."
+
     if os.path.exists(temp_file):
         os.remove(temp_file)
 
@@ -56,5 +57,73 @@ async def generate_code_endpoint(request: Request):
         "code": code,
         "execution_result": execution_result,
         "linting_result": linting_result,
-        "libraries": library_context
+        "libraries": library_context,
+        "language": language
     }
+
+def detect_language(query: str) -> str:
+    """Detect programming language from query keywords."""
+    query = query.lower()
+    language_map = {
+        "python": "py",
+        "javascript": "js",
+        "js": "js",
+        "java": "java",
+        "cpp": "cpp",
+        "c++": "cpp",
+        "c": "c",
+        "csharp": "cs",
+        "c#": "cs",
+        "go": "go",
+        "golang": "go",
+        "rust": "rs",
+        "kotlin": "kt",
+        "swift": "swift",
+        "typescript": "ts",
+        "php": "php",
+        "ruby": "rb",
+        "scala": "scala",
+        "perl": "pl",
+        "lua": "lua",
+        "dart": "dart",
+        "elixir": "ex",
+        "haskell": "hs",
+        "ocaml": "ml",
+        "fsharp": "fs",
+        "f#": "fs",
+        "r": "r",
+        "matlab": "m",
+        "sql": "sql",
+        "powershell": "ps1",
+        "bash": "sh",
+        "shell": "sh",
+        "awk": "awk",
+        "sed": "sed",
+        "verilog": "v",
+        "vhdl": "vhdl",
+        "erlang": "erl",
+        "clojure": "clj",
+        "racket": "rkt",
+        "scheme": "scm",
+        "lisp": "lisp",
+        "fortran": "f90",
+        "cobol": "cbl",
+        "pascal": "pas",
+        "ada": "ada",
+        "prolog": "pl",
+        "apl": "apl",
+        "forth": "fs",
+        "groovy": "groovy",
+        "nim": "nim",
+        "zig": "zig",
+        "v": "v",
+        "odin": "odin",
+        "haxe": "hx",
+        "red": "red",
+        "rebol": "reb",
+        # Add more as needed
+    }
+    for lang, ext in language_map.items():
+        if lang in query:
+            return ext
+    return ""  # Default to empty if undetected
