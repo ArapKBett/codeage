@@ -1,4 +1,5 @@
-FROM python:3.10  # Use full image instead of slim for better dependency support
+# Use full image instead of slim for better dependency support
+FROM python:3.10
 
 WORKDIR /app
 
